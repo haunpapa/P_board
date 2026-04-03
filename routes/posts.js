@@ -3,12 +3,12 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
-const { postQueries } = require('../database');
+const { postQueries, UPLOADS_DIR } = require('../database');
 
 const router = express.Router();
 
 const storage = multer.diskStorage({
-  destination: path.join(__dirname, '..', 'uploads'),
+  destination: UPLOADS_DIR,
   filename(_req, file, cb) {
     const ext = path.extname(file.originalname).toLowerCase();
     cb(null, `${uuidv4()}${ext}`);
@@ -62,11 +62,13 @@ router.post('/posts', upload.single('htmlFile'), (req, res) => {
   res.redirect(`/posts/${id}`);
 });
 
-// View
+// View - serve HTML file directly
 router.get('/posts/:id', (req, res) => {
   const post = postQueries.findById(req.params.id);
   if (!post) return res.status(404).render('error', { message: '게시글을 찾을 수 없습니다.' });
-  res.render('view', { post });
+  const filePath = path.join(UPLOADS_DIR, post.filename);
+  if (!fs.existsSync(filePath)) return res.status(404).render('error', { message: '파일을 찾을 수 없습니다.' });
+  res.sendFile(filePath);
 });
 
 // Edit form
@@ -94,7 +96,7 @@ router.post('/posts/:id', upload.single('htmlFile'), (req, res) => {
 
   if (req.file) {
     // Delete old file
-    const oldPath = path.join(__dirname, '..', 'uploads', post.filename);
+    const oldPath = path.join(UPLOADS_DIR, post.filename);
     if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
 
     updateData.filename = req.file.filename;
@@ -110,7 +112,7 @@ router.post('/posts/:id/delete', (req, res) => {
   const post = postQueries.findById(req.params.id);
   if (!post) return res.status(404).render('error', { message: '게시글을 찾을 수 없습니다.' });
 
-  const filePath = path.join(__dirname, '..', 'uploads', post.filename);
+  const filePath = path.join(UPLOADS_DIR, post.filename);
   if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
 
   postQueries.delete(req.params.id);

@@ -1,7 +1,15 @@
 const Database = require('better-sqlite3');
 const path = require('path');
+const fs = require('fs');
 
-const db = new Database(path.join(__dirname, 'board.db'));
+const DATA_DIR = process.env.DATA_DIR || path.join(__dirname);
+const UPLOADS_DIR = path.join(DATA_DIR, 'uploads');
+
+if (!fs.existsSync(UPLOADS_DIR)) {
+  fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+}
+
+const db = new Database(path.join(DATA_DIR, 'board.db'));
 
 db.pragma('journal_mode = WAL');
 db.pragma('foreign_keys = ON');
@@ -54,4 +62,4 @@ const postQueries = {
   }
 };
 
-module.exports = { db, postQueries };
+module.exports = { db, postQueries, DATA_DIR, UPLOADS_DIR };

@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const { UPLOADS_DIR } = require('./database');
 const postRoutes = require('./routes/posts');
 
 const app = express();
@@ -10,7 +11,7 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static(UPLOADS_DIR));
 
 app.use('/', postRoutes);
 
@@ -24,4 +25,5 @@ app.use((err, _req, res, _next) => {
 
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
+  console.log(`Data directory: ${UPLOADS_DIR}`);
 });
