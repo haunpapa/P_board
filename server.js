@@ -20,7 +20,7 @@ app.use((err, _req, res, _next) => {
     return res.status(400).render('error', { message: err.message });
   }
   console.error(err);
-  res.status(500).render('error', { message: '서버 오류가 발생했습니다.' });
+  res.status(500).render('error', { message: err.message || '서버 오류가 발생했습니다.' });
 });
 
 app.listen(PORT, () => {

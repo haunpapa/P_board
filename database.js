@@ -27,7 +27,12 @@ db.exec(`
 `);
 
 const postQueries = {
-  findAll() {
+  findAll(search) {
+    if (search) {
+      return db.prepare(
+        "SELECT id, title, author, created_at, updated_at FROM posts WHERE title LIKE ? ORDER BY created_at DESC"
+      ).all(`%${search}%`);
+    }
     return db.prepare(
       'SELECT id, title, author, created_at, updated_at FROM posts ORDER BY created_at DESC'
     ).all();

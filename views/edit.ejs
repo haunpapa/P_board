@@ -1,7 +1,10 @@
 <%- include('header') %>
 
 <div class="form-page">
-  <h1>글 수정</h1>
+  <div class="form-header">
+    <h1>글 수정</h1>
+    <p class="form-desc">게시글 정보를 수정합니다</p>
+  </div>
 
   <% if (typeof error !== 'undefined') { %>
     <div class="alert alert-error"><%= error %></div>
@@ -24,13 +27,15 @@
 
     <div class="form-group">
       <label for="htmlFile">HTML 파일</label>
-      <input type="file" id="htmlFile" name="htmlFile" accept=".html,.htm">
-      <small>현재 파일: <%= post.original_name %> (변경하지 않으려면 비워두세요)</small>
+      <div class="file-upload">
+        <input type="file" id="htmlFile" name="htmlFile" accept=".html,.htm">
+        <small>현재 파일: <%= post.original_name %> (변경하지 않으려면 비워두세요)</small>
+      </div>
     </div>
 
     <div class="form-actions">
-      <button type="submit" class="btn btn-primary">수정</button>
-      <a href="/posts/<%= post.id %>" class="btn">취소</a>
+      <button type="submit" class="btn btn-primary btn-full">수정하기</button>
+      <a href="/" class="btn btn-ghost btn-full">취소</a>
     </div>
   </form>
 </div>

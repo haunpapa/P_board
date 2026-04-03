@@ -1,7 +1,10 @@
 <%- include('header') %>
 
 <div class="form-page">
-  <h1>글쓰기</h1>
+  <div class="form-header">
+    <h1>새 글쓰기</h1>
+    <p class="form-desc">HTML 파일을 업로드하여 게시글을 작성합니다</p>
+  </div>
 
   <% if (typeof error !== 'undefined') { %>
     <div class="alert alert-error"><%= error %></div>
@@ -24,13 +27,15 @@
 
     <div class="form-group">
       <label for="htmlFile">HTML 파일</label>
-      <input type="file" id="htmlFile" name="htmlFile" accept=".html,.htm" required>
-      <small>HTML/HTM 파일만 업로드 가능 (최대 5MB)</small>
+      <div class="file-upload">
+        <input type="file" id="htmlFile" name="htmlFile" accept=".html,.htm" required>
+        <small>HTML/HTM 파일만 업로드 가능 (최대 5MB)</small>
+      </div>
     </div>
 
     <div class="form-actions">
-      <button type="submit" class="btn btn-primary">등록</button>
-      <a href="/" class="btn">취소</a>
+      <button type="submit" class="btn btn-primary btn-full">등록하기</button>
+      <a href="/" class="btn btn-ghost btn-full">취소</a>
     </div>
   </form>
 </div>

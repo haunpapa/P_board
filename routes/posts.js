@@ -31,9 +31,10 @@ const upload = multer({
 });
 
 // List
-router.get('/', (_req, res) => {
-  const posts = postQueries.findAll();
-  res.render('index', { posts });
+router.get('/', (req, res) => {
+  const search = req.query.q || '';
+  const posts = postQueries.findAll(search);
+  res.render('index', { posts, search });
 });
 
 // Create form
