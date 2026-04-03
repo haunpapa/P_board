@@ -10,7 +10,7 @@
     <div class="alert alert-error"><%= error %></div>
   <% } %>
 
-  <form action="/posts/<%= post.id %>" method="POST" enctype="multipart/form-data">
+  <form action="/posts/<%= post.id %>?admin=<%= adminKey %>" method="POST" enctype="multipart/form-data">
     <div class="form-group">
       <label for="title">제목</label>
       <input type="text" id="title" name="title" required

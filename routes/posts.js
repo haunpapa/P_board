@@ -7,6 +7,17 @@ const { postQueries, UPLOADS_DIR } = require('../database');
 
 const router = express.Router();
 
+const ADMIN_KEY = process.env.ADMIN_KEY || 'haeon1121';
+
+function isAdmin(req) {
+  return req.query.admin === ADMIN_KEY || req.body?.admin === ADMIN_KEY;
+}
+
+function requireAdmin(req, res, next) {
+  if (!isAdmin(req)) return res.status(403).render('error', { message: '권한이 없습니다.' });
+  next();
+}
+
 const storage = multer.diskStorage({
   destination: UPLOADS_DIR,
   filename(_req, file, cb) {
@@ -33,17 +44,18 @@ const upload = multer({
 // List
 router.get('/', (req, res) => {
   const search = req.query.q || '';
+  const admin = isAdmin(req);
   const posts = postQueries.findAll(search);
-  res.render('index', { posts, search });
+  res.render('index', { posts, search, admin, adminKey: admin ? ADMIN_KEY : '' });
 });
 
 // Create form
-router.get('/posts/new', (_req, res) => {
-  res.render('create');
+router.get('/posts/new', requireAdmin, (req, res) => {
+  res.render('create', { adminKey: ADMIN_KEY });
 });
 
 // Create
-router.post('/posts', upload.single('htmlFile'), (req, res) => {
+router.post('/posts', requireAdmin, upload.single('htmlFile'), (req, res) => {
   const { title, author } = req.body;
 
   if (!title || !author || !req.file) {
@@ -73,14 +85,14 @@ router.get('/posts/:id', (req, res) => {
 });
 
 // Edit form
-router.get('/posts/:id/edit', (req, res) => {
+router.get('/posts/:id/edit', requireAdmin, (req, res) => {
   const post = postQueries.findById(req.params.id);
   if (!post) return res.status(404).render('error', { message: '게시글을 찾을 수 없습니다.' });
-  res.render('edit', { post });
+  res.render('edit', { post, adminKey: ADMIN_KEY });
 });
 
 // Update
-router.post('/posts/:id', upload.single('htmlFile'), (req, res) => {
+router.post('/posts/:id', requireAdmin, upload.single('htmlFile'), (req, res) => {
   const post = postQueries.findById(req.params.id);
   if (!post) return res.status(404).render('error', { message: '게시글을 찾을 수 없습니다.' });
 
@@ -109,7 +121,7 @@ router.post('/posts/:id', upload.single('htmlFile'), (req, res) => {
 });
 
 // Delete
-router.post('/posts/:id/delete', (req, res) => {
+router.post('/posts/:id/delete', requireAdmin, (req, res) => {
   const post = postQueries.findById(req.params.id);
   if (!post) return res.status(404).render('error', { message: '게시글을 찾을 수 없습니다.' });
 
