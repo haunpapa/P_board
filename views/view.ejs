@@ -1,0 +1,28 @@
+<%- include('header') %>
+
+<div class="post-detail">
+  <div class="post-meta">
+    <h1><%= post.title %></h1>
+    <div class="meta-info">
+      <span>작성자: <%= post.author %></span>
+      <span>작성일: <%= post.created_at %></span>
+      <% if (post.updated_at !== post.created_at) { %>
+        <span>수정일: <%= post.updated_at %></span>
+      <% } %>
+    </div>
+    <div class="post-actions">
+      <a href="/posts/<%= post.id %>/edit" class="btn btn-secondary">수정</a>
+      <form action="/posts/<%= post.id %>/delete" method="POST" class="inline-form"
+            onsubmit="return confirm('정말 삭제하시겠습니까?')">
+        <button type="submit" class="btn btn-danger">삭제</button>
+      </form>
+      <a href="/" class="btn">목록</a>
+    </div>
+  </div>
+
+  <div class="post-content">
+    <iframe src="/uploads/<%= post.filename %>" sandbox="allow-same-origin" title="게시글 내용"></iframe>
+  </div>
+</div>
+
+<%- include('footer') %>

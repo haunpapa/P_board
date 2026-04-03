@@ -1,0 +1,38 @@
+<%- include('header') %>
+
+<div class="form-page">
+  <h1>글 수정</h1>
+
+  <% if (typeof error !== 'undefined') { %>
+    <div class="alert alert-error"><%= error %></div>
+  <% } %>
+
+  <form action="/posts/<%= post.id %>" method="POST" enctype="multipart/form-data">
+    <div class="form-group">
+      <label for="title">제목</label>
+      <input type="text" id="title" name="title" required
+             value="<%= post.title %>"
+             placeholder="게시글 제목을 입력하세요">
+    </div>
+
+    <div class="form-group">
+      <label for="author">작성자</label>
+      <input type="text" id="author" name="author" required
+             value="<%= post.author %>"
+             placeholder="작성자명을 입력하세요">
+    </div>
+
+    <div class="form-group">
+      <label for="htmlFile">HTML 파일</label>
+      <input type="file" id="htmlFile" name="htmlFile" accept=".html,.htm">
+      <small>현재 파일: <%= post.original_name %> (변경하지 않으려면 비워두세요)</small>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">수정</button>
+      <a href="/posts/<%= post.id %>" class="btn">취소</a>
+    </div>
+  </form>
+</div>
+
+<%- include('footer') %>
